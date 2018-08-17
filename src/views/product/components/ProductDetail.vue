@@ -261,8 +261,7 @@ export default {
 
         submitForm() {
             this.$refs.postForm.validate(valid => {
-                if (valid) {
-                    //提交数据到服务器
+                if (valid) {                    
                     let data = {
                         ...this.postForm,
                         image_id: this.image_id
