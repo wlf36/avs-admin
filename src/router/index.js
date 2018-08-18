@@ -65,7 +65,7 @@ export const constantRouterMap = [
         name: 'Edit Vocabulary', 
         meta: { title: '编辑词汇表', noCache: true }, 
         hidden: true 
-      },
+      },      
       { 
         path: ':id(\\d+)', 
         component: () => import('@/views/vocabulary/category'), 
@@ -88,11 +88,25 @@ export const constantRouterMap = [
         hidden: true 
       }, 
       { 
+        path: 'tag/create',    
+        component: () => import('@/views/tag/create'), 
+        name: 'Create Tag', 
+        meta: { title: '创建标签', icon: 'edit' }
+      },  
+      { 
+        path: 'tag/:id/edit',    
+        component: () => import('@/views/tag/edit'), 
+        name: 'Edit Tag', 
+        meta: { title: '编辑标签', icon: 'edit' },
+        hidden: true 
+      },
+      { 
         path: 'tag/list', 
         component: () => import('@/views/vocabulary/taglist'), 
         name: 'Tag List', 
         meta: { title: '标签列表', icon: 'list' }
       },
+
     ]
   }, 
 

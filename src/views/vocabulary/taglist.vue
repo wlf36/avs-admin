@@ -17,7 +17,10 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="scope">                
+        <template slot-scope="scope"> 
+          <router-link :to="`/vocabulary/tag/${scope.row.id}/edit`">
+            <el-button type="primary" size="mini">编辑</el-button>   
+          </router-link>       
           <el-button size="mini" type="danger" @click="deleteTag(scope.row.id)">删除</el-button>
         </template>
       </el-table-column> 
