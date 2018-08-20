@@ -1,11 +1,10 @@
 import request from '@/utils/request'
 
 //banner
-export function fetchBanners(params) {
+export function fetchBanners() {
   return request({
     url: '/banner',
-    method: 'get',
-    params
+    method: 'get'
   })
 }
 

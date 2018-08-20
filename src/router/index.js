@@ -138,7 +138,28 @@ export const constantRouterMap = [
         name: 'Edit banner', 
         meta: { title: 'Edit banner', noCache: true }, 
         hidden: true 
-      }
+      },
+      { 
+        path: ':banner_id(\\d+)', 
+        component: () => import('@/views/banner_item/list'), 
+        name: 'BannerItem List', 
+        meta: { title: 'banner项目', noCache: true }, 
+        hidden: true        
+      },
+      { 
+        path: ':banner_id/create',    
+        component: () => import('@/views/banner_item/create'), 
+        name: 'Add Banner Item', 
+        meta: { title: '添加banner项目', icon: 'edit' },
+        hidden: true 
+      },  
+      { 
+        path: 'banneritem/edit/:banneritem_id',    
+        component: () => import('@/views/banner_item/edit'), 
+        name: 'Edit BannerItem', 
+        meta: { title: '编辑banner项目', icon: 'edit' },
+        hidden: true 
+      }, 
     ]
   },
 

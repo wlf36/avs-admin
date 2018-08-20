@@ -34,6 +34,9 @@
       </el-table-column>      
       <el-table-column align="center" label="操作" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <router-link :to="`/banner/${scope.row.id}`">
+            <el-button type="success" size="mini">添加/查看</el-button>
+          </router-link>  
           <router-link :to="`/banner/edit/${scope.row.id}`">
             <el-button type="primary" size="mini">编辑</el-button>   
           </router-link>       
