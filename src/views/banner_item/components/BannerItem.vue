@@ -50,7 +50,11 @@
 import MDinput from "@/components/MDinput";
 import Upload from "@/components/Upload/singleImage3";
 import { validateURL } from "@/utils/validate";
-import { fetchBannerItem, createBannerItem, updateBannerItem } from "@/api/bannerItem";
+import {
+    fetchBannerItem,
+    createBannerItem,
+    updateBannerItem
+} from "@/api/bannerItem";
 import { removeFile } from "@/api/file";
 import { getToken } from "@/utils/auth";
 
@@ -117,25 +121,25 @@ export default {
         removeImage(file, fileList) {
             let id = file.id || file.response.data.id;
             removeFile(id);
-            this.postForm.image_id = ''
+            this.postForm.image_id = null;
         },
 
         fetchData(id) {
             fetchBannerItem(id)
                 .then(response => {
                     let bannerItem = response.data[0];
-                    if(bannerItem.url_type){
-                        bannerItem.url_type = bannerItem.url_type.toString()
-                    }                    
+                    if (bannerItem.url_type) {
+                        bannerItem.url_type = bannerItem.url_type.toString();
+                    }
                     if (bannerItem.image !== null) {
                         this.fileList.push({
                             id: bannerItem.image.id,
                             name: bannerItem.image.client_name,
                             url: `${process.env.HOST}${bannerItem.image.url}`
-                        })                        
+                        });
                     }
-                    this.postForm = bannerItem
-                    console.log(this.postForm)
+                    this.postForm = bannerItem;
+                    console.log(this.postForm);
                 })
                 .catch(err => {
                     console.log(err);
@@ -145,13 +149,14 @@ export default {
         submitForm() {
             this.$refs.postForm.validate(valid => {
                 if (valid) {
-                    let banner_id = this.$route.params && this.$route.params.banner_id;
-                    //提交数据到服务器          
+                    let banner_id =
+                        this.$route.params && this.$route.params.banner_id;
+                    //提交数据到服务器
                     let data = {
-                        banner_id,                        
+                        banner_id,
                         ...this.postForm
                     };
-                    // console.log(data);                    
+                    // console.log(data);
                     if (!this.isEdit) {
                         createBannerItem(data).then(response => {
                             this.$notify({
@@ -161,10 +166,12 @@ export default {
                                 duration: 2000
                             });
                             this.loading = false;
-                            this.$router.push(`/banner/${banner_id}`)
+                            this.$router.push(`/banner/${banner_id}`);
                         });
-                    } else {   
-                        let banneritem_id = this.$route.params && this.$route.params.banneritem_id;      
+                    } else {
+                        let banneritem_id =
+                            this.$route.params &&
+                            this.$route.params.banneritem_id;
                         updateBannerItem(banneritem_id, data).then(response => {
                             this.$notify({
                                 title: "成功",
@@ -173,7 +180,7 @@ export default {
                                 duration: 2000
                             });
                             this.loading = false;
-                            // this.$router.push(`/banner/${banner_id}`)
+                            this.$router.push(`/banner/${banner_id}`);
                         });
                     }
                 } else {
@@ -182,7 +189,6 @@ export default {
                 }
             });
         }
-
     }
 };
 </script>

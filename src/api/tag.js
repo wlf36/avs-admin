@@ -1,24 +1,24 @@
 import request from '@/utils/request'
 
 export function getAllTag() {
-  return request({
-    url: `/getalltag`,
-    method: 'get'
-  })
+    return request({
+        url: `/getalltag`,
+        method: 'get'
+    })
 }
 
 export function fetchTags() {
-  return request({
-    url: '/tag',
-    method: 'get'
-  })
+    return request({
+        url: '/tag',
+        method: 'get'
+    })
 }
 
 export function removeTag(id) {
-  return request({
-    url: `/tag/${id}`,
-    method: 'delete'
-  })
+    return request({
+        url: `/tag/${id}`,
+        method: 'delete'
+    })
 }
 
 export function fetchTag(id) {

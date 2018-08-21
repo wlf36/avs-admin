@@ -13,13 +13,15 @@
                         <span class="word-counter" v-show="contentShortLength">{{contentShortLength}}字</span>
                     </el-form-item>
                     <el-form-item label="商品分类:">
-                        <el-select v-model="postForm.category" multiple filterable placeholder="请输入分类名称" :filter-method="filterCat" @remove-tag="deleteCategory" :loading="loading">
+                        <el-select v-model="postForm.category" multiple filterable placeholder="请输入分类名称" :filter-method="filterCat" @remove-tag="deleteCategory"
+                            :loading="loading">
                             <el-option v-for="item in catOptions" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <div class="up-container">
-                        <el-upload ref="upload" :action="file_api" :auto-upload="true" :on-remove="removeImage" :on-success="uploadImageSuccess" :headers="headers" :file-list="fileList" list-type="picture">
+                        <el-upload ref="upload" :action="file_api" :auto-upload="true" :on-remove="removeImage" :on-success="uploadImageSuccess"
+                            :headers="headers" :file-list="fileList" list-type="picture">
                             <el-button size="small" type="primary">上传缩略图</el-button>
                             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2M</div>
                         </el-upload>
@@ -41,7 +43,8 @@
                         <MDinput name="name" v-model="postForm.stock">商品库存</MDinput>
                     </el-form-item>
                     <el-form-item label="商品tag标签:">
-                        <el-select v-model="postForm.tag" multiple filterable placeholder="请输入tag标签" :filter-method="filterTag" @remove-tag="deleteTag" :loading="loading">
+                        <el-select v-model="postForm.tag" multiple filterable placeholder="请输入tag标签" :filter-method="filterTag" @remove-tag="deleteTag"
+                            :loading="loading">
                             <el-option v-for="item in tagOptions" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -82,255 +85,284 @@
 </template>
 
 <script>
-import Tinymce from "@/components/Tinymce";
-import Upload from "@/components/Upload/singleImage3";
-import MDinput from "@/components/MDinput";
-import { validateURL } from "@/utils/validate";
-import {
-    createProduct,
-    updateProduct,
-    fetchProduct,
-    removeCategory,
-    removeTag
-} from "@/api/product";
-import { fetchCategories, getAllCategory } from "@/api/category";
-import { fetchTags, getAllTag, fetchOrCreateTag } from "@/api/tag";
-import { removeFile } from "@/api/file";
-import { getToken } from "@/utils/auth";
+    import Tinymce from "@/components/Tinymce";
+    import Upload from "@/components/Upload/singleImage3";
+    import MDinput from "@/components/MDinput";
+    import {
+        validateURL
+    } from "@/utils/validate";
+    import {
+        createProduct,
+        updateProduct,
+        fetchProduct,
+        removeCategory,
+        removeTag
+    } from "@/api/product";
+    import {
+        fetchCategories,
+        getAllCategory
+    } from "@/api/category";
+    import {
+        fetchTags,
+        getAllTag,
+        fetchOrCreateTag
+    } from "@/api/tag";
+    import {
+        removeFile
+    } from "@/api/file";
+    import {
+        getToken
+    } from "@/utils/auth";
 
-const defaultForm = {
-    title: "", // 文章题目
-    description: "", // 文章摘要
-    publish: 1,
-    id: undefined,
-    meta: [
-        {
+    const defaultForm = {
+        title: "", // 文章题目
+        description: "", // 文章摘要
+        publish: 1,
+        id: undefined,
+        meta: [{
             meta_key: null,
             meta_value: null
-        }
-    ]
-};
+        }]
+    };
 
-export default {
-    name: "ProductDetail",
-    components: { Tinymce, MDinput, Upload },
-    props: {
-        isEdit: {
-            type: Boolean,
-            default: false
-        }
-    },
-    data() {
-        const validateRequire = (rule, value, callback) => {
-            if (value === "") {
-                this.$message({
-                    message: rule.field + "为必传项",
-                    type: "error"
-                });
-                callback(null);
-            } else {
-                callback();
-            }
-        };
-
-        return {
-            activeTab: "base",
-            headers: {
-                Authorization: "Bearer " + getToken()
-            },
-            file_api: `${process.env.BASE_API}/image`,
-            postForm: Object.assign({}, defaultForm),
-            loading: false,
-            rules: {
-                title: [{ validator: validateRequire }]
-            },
-            imgId: [],
-            fileList: [],
-            total: 0,
-            listQuery: {
-                page: 1,
-                limit: 10
-            },
-            categories: [],
-            catOptions: [],
-            tags: [],
-            tagOptions: []
-        };
-    },
-    computed: {
-        contentShortLength() {
-            return this.postForm.description.length;
-        }
-    },
-    created() {
-        getAllCategory().then(response => {
-            const _category = response.data;
-            this.categories = _category.map(item => {
-                return { value: item.id, label: item.name };
-            });
-        });
-
-        getAllTag().then(response => {
-            const _tag = response.data;
-            this.tags = _tag.map(item => {
-                return { value: item.id, label: item.name };
-            });
-        });
-
-        if (this.isEdit) {
-            let id = this.$route.params.id;
-            this.fetchData(id);
-        } else {
-            this.postForm = Object.assign({}, defaultForm);
-        }
-    },
-    methods: {
-        deleteCategory(category) {
-            const id = this.$route.params.id;
-            removeCategory(id, { category: category });
+    export default {
+        name: "ProductDetail",
+        components: {
+            Tinymce,
+            MDinput,
+            Upload
         },
-
-        deleteTag(tag) {
-            const id = this.$route.params.id;
-            removeTag(id, { tag: tag });
-        },
-
-        filterCat(query) {
-            if (query !== "") {
-                this.catOptions = this.categories.filter(item => {
-                    return item.label.indexOf(query) > -1;
-                });
-            } else {
-                this.catOptions = [];
+        props: {
+            isEdit: {
+                type: Boolean,
+                default: false
             }
         },
-
-        filterTag(query) {
-            if (query !== "") {
-                this.tagOptions = this.tags.filter(item => {
-                    return item.label.indexOf(query) > -1;
-                });
-            } else {
-                this.tagOptions = [];
-            }
-        },
-
-        addMeta() {
-            this.postForm.meta.push({
-                meta_key: null,
-                meta_value: null
-            });
-        },
-
-        removeMeta(index) {
-            this.postForm.meta.splice(index, 1);
-        },
-
-        uploadImageSuccess(response, file, fileList) {
-            this.image_id = response.data.id;
-        },
-
-        removeImage(file, fileList) {
-            let id = file.id || file.response.data.id;
-            removeFile(id);
-        },
-
-        fetchData(id) {
-            fetchProduct(id)
-                .then(response => {
-                    let product = response.data[0];                    
-                    product.category = product.category.map(item => {
-                        return item.name;
+        data() {
+            const validateRequire = (rule, value, callback) => {
+                if (value === "") {
+                    this.$message({
+                        message: rule.field + "为必传项",
+                        type: "error"
                     });
-                    product.tag = product.tag.map(item => {
-                        return item.name;
-                    });
-                    if (product.image !== null) {
-                        this.fileList.push({
-                            id: product.image.id,
-                            name: product.image.client_name,
-                            url: `${process.env.HOST}${product.image.url}`
-                        })                        
-                    }
-                    this.postForm = product;
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        },
-
-        submitForm() {
-            this.$refs.postForm.validate(valid => {
-                if (valid) {                    
-                    let data = {
-                        ...this.postForm,
-                        image_id: this.image_id
-                    };
-                    if (!this.isEdit) {
-                        createProduct(data).then(response => {
-                            this.$notify({
-                                title: "成功",
-                                message: "发布成功",
-                                type: "success",
-                                duration: 2000
-                            });
-                            this.loading = false;
-                            this.$router.push("/product/list");
-                        });
-                    } else {
-                        let id = this.$route.params.id;
-                        updateProduct(id, data).then(response => {
-                            this.$notify({
-                                title: "成功",
-                                message: "更新成功",
-                                type: "success",
-                                duration: 2000
-                            });
-                            this.loading = false;
-                            this.$router.push("/product/list");
-                        });
-                    }
+                    callback(null);
                 } else {
-                    console.log("error submit!!");
-                    return false;
+                    callback();
                 }
+            };
+
+            return {
+                activeTab: "base",
+                headers: {
+                    Authorization: "Bearer " + getToken()
+                },
+                file_api: `${process.env.BASE_API}/image`,
+                postForm: Object.assign({}, defaultForm),
+                loading: false,
+                rules: {
+                    title: [{
+                        validator: validateRequire
+                    }]
+                },
+                imgId: [],
+                fileList: [],
+                total: 0,
+                listQuery: {
+                    page: 1,
+                    limit: 10
+                },
+                categories: [],
+                catOptions: [],
+                tags: [],
+                tagOptions: []
+            };
+        },
+        computed: {
+            contentShortLength() {
+                return this.postForm.description.length;
+            }
+        },
+        created() {
+            getAllCategory().then(response => {
+                const _category = response.data;
+                this.categories = _category.map(item => {
+                    return {
+                        value: item.id,
+                        label: item.name
+                    };
+                });
             });
+
+            getAllTag().then(response => {
+                const _tag = response.data;
+                this.tags = _tag.map(item => {
+                    return {
+                        value: item.id,
+                        label: item.name
+                    };
+                });
+            });
+
+            if (this.isEdit) {
+                let id = this.$route.params.id;
+                this.fetchData(id);
+            } else {
+                this.postForm = Object.assign({}, defaultForm);
+            }
+        },
+        methods: {
+            deleteCategory(category) {
+                const id = this.$route.params.id;
+                removeCategory(id, {
+                    category: category
+                });
+            },
+
+            deleteTag(tag) {
+                const id = this.$route.params.id;
+                removeTag(id, {
+                    tag: tag
+                });
+            },
+
+            filterCat(query) {
+                if (query !== "") {
+                    this.catOptions = this.categories.filter(item => {
+                        return item.label.indexOf(query) > -1;
+                    });
+                } else {
+                    this.catOptions = [];
+                }
+            },
+
+            filterTag(query) {
+                if (query !== "") {
+                    this.tagOptions = this.tags.filter(item => {
+                        return item.label.indexOf(query) > -1;
+                    });
+                } else {
+                    this.tagOptions = [];
+                }
+            },
+
+            addMeta() {
+                this.postForm.meta.push({
+                    meta_key: null,
+                    meta_value: null
+                });
+            },
+
+            removeMeta(index) {
+                this.postForm.meta.splice(index, 1);
+            },
+
+            uploadImageSuccess(response, file, fileList) {
+                this.postForm.image_id = response.data.id;
+            },
+
+            removeImage(file, fileList) {
+                let id = file.id || file.response.data.id;
+                removeFile(id);
+                this.postForm.image_id = null;
+            },
+
+            fetchData(id) {
+                fetchProduct(id)
+                    .then(response => {
+                        let product = response.data[0];
+                        product.category = product.category.map(item => {
+                            return item.name;
+                        });
+                        product.tag = product.tag.map(item => {
+                            return item.name;
+                        });
+                        if (product.image !== null) {
+                            this.fileList.push({
+                                id: product.image.id,
+                                name: product.image.client_name,
+                                url: `${process.env.HOST}${product.image.url}`
+                            })
+                        }
+                        this.postForm = product;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            },
+
+            submitForm() {
+                this.$refs.postForm.validate(valid => {
+                    if (valid) {
+                        let data = {
+                            ...this.postForm
+                        };
+                        if (!this.isEdit) {
+                            createProduct(data).then(response => {
+                                this.$notify({
+                                    title: "成功",
+                                    message: "发布成功",
+                                    type: "success",
+                                    duration: 2000
+                                });
+                                this.loading = false;
+                                this.$router.push("/product/list");
+                            });
+                        } else {
+                            let id = this.$route.params.id;
+                            updateProduct(id, data).then(response => {
+                                this.$notify({
+                                    title: "成功",
+                                    message: "更新成功",
+                                    type: "success",
+                                    duration: 2000
+                                });
+                                this.loading = false;
+                                this.$router.push("/product/list");
+                            });
+                        }
+                    } else {
+                        console.log("error submit!!");
+                        return false;
+                    }
+                });
+            }
         }
-    }
-};
+    };
+
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import "src/styles/mixin.scss";
-.createPost-container {
-    position: relative;
-    padding: 30px;
-    max-width: 980px;
-    .el-select,
-    .el-tooltip {
-        display: block;
-        margin-top: 30px;
-    }
-    .up-container {
-        margin: 30px 0;
-    }
-    .editor-container {
-        min-height: 500px;
-        margin: 30px 0;
-        border-right: 1px solid #c5c5c5;
-        .editor-upload-btn-container {
-            text-align: right;
-            margin-right: 10px;
-            .editor-upload-btn {
-                display: inline-block;
+    @import "src/styles/mixin.scss";
+    .createPost-container {
+        position: relative;
+        padding: 30px;
+        max-width: 980px;
+        .el-select,
+        .el-tooltip {
+            display: block;
+            margin-top: 30px;
+        }
+        .up-container {
+            margin: 30px 0;
+        }
+        .editor-container {
+            min-height: 500px;
+            margin: 30px 0;
+            border-right: 1px solid #c5c5c5;
+            .editor-upload-btn-container {
+                text-align: right;
+                margin-right: 10px;
+                .editor-upload-btn {
+                    display: inline-block;
+                }
             }
         }
+        .word-counter {
+            width: 40px;
+            position: absolute;
+            right: -10px;
+            top: 0px;
+        }
     }
-    .word-counter {
-        width: 40px;
-        position: absolute;
-        right: -10px;
-        top: 0px;
-    }
-}
+
 </style>

@@ -54,7 +54,7 @@
             </el-table-column>
             <el-table-column align="center" label="操作" width="230" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-                    <router-link :to="`/banner/banneritem/edit/${scope.row.id}`">
+                    <router-link :to="`/banner/${banner_id}/banneritem/edit/${scope.row.id}`">
                         <el-button type="primary" size="mini">编辑</el-button>
                     </router-link>
                     <el-button size="mini" type="danger" @click="deleteBannerItem(scope.row.id)">删除</el-button>
@@ -70,62 +70,70 @@
 </template>
 
 <script>
-import { fetchBannerItems, removeBannerItem } from '@/api/bannerItem'
+    import {
+        fetchBannerItems,
+        removeBannerItem
+    } from '@/api/bannerItem'
 
-export default {
-    name: 'bannerItemList',
-    data() {
-        return {
-            list: null,
-            listLoading: true,
-            banner_id: 0
-        }
-    },
-    created() {
-        const id = this.$route.params && this.$route.params.banner_id;
-        this.banner_id = id
-        this.getList(id)
-    },
-    methods: {
-        deleteBannerItem(id) {
-            console.log(id)
-            removeBannerItem(id).then((response) => {
-                console.log(response)
-                this.$notify({
-                    title: "删除成功",
-                    message: response.message,
-                    type: "success",
-                    duration: 2000
-                });
-                this.getList(this.banner_id)
-            })
+    export default {
+        name: 'bannerItemList',
+        data() {
+            return {
+                list: null,
+                listLoading: true,
+                banner_id: 0
+            }
         },
+        created() {
+            const id = this.$route.params && this.$route.params.banner_id;
+            this.banner_id = id
+            this.getList(id)
+        },
+        methods: {
+            deleteBannerItem(id) {
+                console.log(id)
+                removeBannerItem(id).then((response) => {
+                    console.log(response)
+                    this.$notify({
+                        title: "删除成功",
+                        message: response.message,
+                        type: "success",
+                        duration: 2000
+                    });
+                    this.getList(this.banner_id)
+                })
+            },
 
-        getList(id) {
-            this.listLoading = true
-            fetchBannerItems(id).then(response => {
-                console.log(response.data)
-                this.list = response.data
-                this.listLoading = false
-            })
+            getList(id) {
+                this.listLoading = true
+                fetchBannerItems(id).then(response => {
+                    console.log(response.data)
+                    this.list = response.data
+                    this.listLoading = false
+                })
+            }
         }
     }
-}
+
 </script>
 
 <style scoped>
-.app_container {
-    position: relative;
-}
-.pagination-container {
-    margin-top: 30px;
-}
-.edit-input {
-    padding-right: 100px;
-}
-.cancel-btn {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-}
+    .app_container {
+        position: relative;
+    }
+
+    .pagination-container {
+        margin-top: 30px;
+    }
+
+    .edit-input {
+        padding-right: 100px;
+    }
+
+    .cancel-btn {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+    }
+
 </style>
