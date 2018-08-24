@@ -1,7 +1,7 @@
 <template>
     <div class="createPost-container">
         <el-form class="form-container" :model="postForm" :rules="rules" ref="postForm">
-            <el-tabs v-model="activeTab" @tab-click="handleClick">
+            <el-tabs v-model="activeTab" >
 
                 <el-tab-pane label="基础信息" name="base">
                     <el-form-item prop="title">
@@ -9,8 +9,7 @@
                     </el-form-item>
                     <el-form-item label="商品描述:">
                         <el-input type="textarea" class="article-textarea" :rows="3" placeholder="请输入内容" v-model="postForm.description">
-                        </el-input>
-                        <span class="word-counter" v-show="contentShortLength">{{contentShortLength}}字</span>
+                        </el-input>                        
                     </el-form-item>
                     <el-form-item label="商品分类:">
                         <el-select v-model="postForm.category" multiple filterable placeholder="请输入分类名称" :filter-method="filterCat" @remove-tag="deleteCategory"
@@ -177,11 +176,7 @@
                 tagOptions: []
             };
         },
-        computed: {
-            contentShortLength() {
-                return this.postForm.description.length;
-            }
-        },
+        
         created() {
             getAllCategory().then(response => {
                 const _category = response.data;
@@ -283,6 +278,13 @@
                                 url: `${process.env.HOST}${product.image.url}`
                             })
                         }
+                        if (product.meta !== null) {
+                            product.meta = [{
+                                meta_key: null,
+                                meta_value: null
+                            }]
+                        }
+                        
                         this.postForm = product;
                     })
                     .catch(err => {
