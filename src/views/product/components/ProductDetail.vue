@@ -35,8 +35,11 @@
                 </el-tab-pane>
 
                 <el-tab-pane label="商品信息" name="price">
-                    <el-form-item prop="price">
-                        <MDinput name="name" v-model="postForm.price">商品价格</MDinput>
+                    <el-form-item prop="regular_price">
+                        <MDinput name="name" v-model="postForm.regular_price">商品价格</MDinput>
+                    </el-form-item>
+                    <el-form-item prop="sale_price">
+                        <MDinput name="name" v-model="postForm.sale_price">促销价格</MDinput>
                     </el-form-item>
                     <el-form-item prop="stock">
                         <MDinput name="name" v-model="postForm.stock">商品库存</MDinput>

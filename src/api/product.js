@@ -16,10 +16,11 @@ export function removeTag(id, data) {
     })
 }
 
-export function fetchProducts() {
+export function fetchProducts(params) {
     return request({
         url: `/product`,
-        method: 'get'
+        method: 'get',
+        params
     })
 }
 

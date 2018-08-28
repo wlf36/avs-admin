@@ -84,6 +84,7 @@
 
             getList() {
                 this.listLoading = true
+                console.log(this.listQuery)
                 fetchProducts(this.listQuery).then(response => {
                     console.log(response.data.data)
                     this.list = response.data.data
@@ -92,6 +93,7 @@
                 })
             },
             handleCurrentChange(val) {
+                console.log(val)
                 this.listQuery.page = val
                 this.getList()
             }
